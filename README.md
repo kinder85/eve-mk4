@@ -12,5 +12,10 @@ ce qui vas etre fait(dans un avenir plus ou moins proche, petit budget...):
       ajout d'un tilt pour la tete(faute de budget il n'y a qu'un servo)
       changer de modele d'inference à la volée pour s'adapter a differente situation
       et d'autre truc auquel j'ai pas encore pensé
-      
+
+v2.py est le main script, vision2.py est l'inference, test_micro2.py c'est pour la voix et myinterpret.py decripte les commandes vocales.
+les trois scripts communiquent via mqtt du coup pour ammeliorer la reco vocale on peut lancer test_micro2.py sur pc et utiliser un modele plus performant
+
+
+
 ps: ne soyez pas trop dur sur ma facon de coder, je suis autodidacte et n'ai jamais pris un cours d'informatique de ma vie.
