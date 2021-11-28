@@ -18,5 +18,5 @@ les trois scripts communiquent via mqtt du coup pour ammeliorer la reco vocale o
 
 le dossier firmware contient le code pour arduino.capteur sur arduino uno(5v), chassis sur esp8266 avec socket en wifi(economie d'un port usb) et tete sur raspi pico qui grace à ses 2 cores me permet d'avoir le son et les animations des yeux sur 2 threads separés pour une utilisation simultanée
 
-
+ le lien vers une demo sur yt : https://youtu.be/oCjVjIgF8Yo
 ps: ne soyez pas trop dur sur ma facon de coder, je suis autodidacte et n'ai jamais pris un cours d'informatique de ma vie.
