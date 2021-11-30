@@ -17,6 +17,9 @@ char input;
 int sensorValue1 = 0;
 int sensorValue2 = 0;
 int sensorValue3 = 0;
+int st = 0;
+int sd = 0;
+int sg = 0;
 void setup(){
 
    pinMode(INPUT,sensorPin1);
@@ -37,17 +40,19 @@ void loop(){
   sensorValue1 = digitalRead(sensorPin1); 
  sensorValue2 = digitalRead(sensorPin2); 
  sensorValue3 = digitalRead(sensorPin3); 
- 
+ st = sonar.ping_cm();
+ sd = sonard.ping_cm();
+ sg = sonarg.ping_cm();
   
   
-  if (sonar.ping_cm()>200){
-    sonar.ping_cm()== 200;
+  if (st>200){
+   st== 200;
   }
- if (sonard.ping_cm()>200){
-    sonard.ping_cm()== 200;
+ if (sd>200){
+    sd== 200;
   }
-  if (sonarg.ping_cm()>200){
-    sonarg.ping_cm()== 200;
+  if (sg>200){
+    sg== 200;
   }
   
  input = Serial.read();
@@ -58,11 +63,11 @@ void loop(){
  
   Serial.print(tension,2);
   Serial.print(",");
-  Serial.print(sonar.ping_cm()); // Send ping, get distance in cm and print result (0 = outside set distance range)
+  Serial.print(st); // Send ping, get distance in cm and print result (0 = outside set distance range)
   Serial.print(",");
-  Serial.print(sonard.ping_cm()); // Send ping, get distance in cm and print result (0 = outside set distance range)
+  Serial.print(sd); // Send ping, get distance in cm and print result (0 = outside set distance range)
   Serial.print(",");
-  Serial.print(sonarg.ping_cm()); // Send ping, get distance in cm and print result (0 = outside set distance range)
+  Serial.print(sg); // Send ping, get distance in cm and print result (0 = outside set distance range)
   Serial.println();
   //delay(1000);
  break;
