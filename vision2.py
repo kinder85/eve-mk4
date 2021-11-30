@@ -14,7 +14,8 @@ import paho.mqtt.client as mqtt
 
 
 i=90
-
+j = 45
+a = 0
 
 index = 0
 width = 0
@@ -24,7 +25,7 @@ vmax = 130
 delay = 0
 cible = 0
 cibleb = 0
-
+trouve = 0
 count = 0
 
 print("Initializing Servos")
@@ -79,9 +80,10 @@ input = jetson.utils.videoSource(opt.input_URI, argv=sys.argv)
 def on_message_vue(mosq, obj, msg):
         vue = msg.payload.decode("utf-8").strip()       
         #print(vue)
-        
+        global trouve
         global cible
         global cibleb
+        
         if vue == "s1":
             cible = 1
             cibleb = 0
@@ -103,9 +105,16 @@ def on_message_vue(mosq, obj, msg):
         if vue == "c3":
             cibleb = 3
             cible = 0
+        if vue == "t3":
+            cible = 0
+            cibleb = 3
+            trouve = 1
+        
+        
         if vue == "stop":
             cible = 0
             cibleb = 0
+            trouve = 0
             kit.servo[0].angle=90
         
 #         print(cible)
@@ -124,21 +133,42 @@ while True:
 
     # print the detections
     #print("detected {:d} objects in image".format(len(detections)))
-    
+    if ((len(detections)) == 0 or index != cibleb or confidence <= 0.8) and trouve == 1:
+        a += 1
+        if a <= 21:
+            
+#             print(a)
+            move = (b"7,160,0.")
+
+            clientm.publish("pre", move)
+#             time.sleep(0.6)
+        elif a >= 22 and a <=40:
+            move = (b"1,160,0.")
+            clientm.publish("pre", move)
+#             time.sleep(1.1)
+            
+            
+        elif a > 41:   
+            a = 0
+        
     
     
     
     if(len(detections) > 0):
+        
+            
         for detection in detections:
             index = detections[0].ClassID
             confidence = (detections[0].Confidence)
             width = (detections[0].Width)
+            height = (detections[0].Height)
             objx = (detections[0].Center[0])
             objy = (detections[0].Center[1])
 
         #print("detection:")
         #print(index)
         #print(width)
+        #print(height)
         #print(objx)
         #print(objy)
         #print(confidence)
@@ -172,7 +202,7 @@ while True:
                 
                
         
-            if difi < (-15):
+            elif difi < (-15):
                   
                 i = i - difi/75
                 
@@ -185,6 +215,11 @@ while True:
 
 
         if index == cibleb and confidence >= 0.9:
+                if trouve == 1:
+                    trouve = 0
+                    print("trouvé")
+                
+                print(height)
             
             
                 if difi > 30:
@@ -194,19 +229,19 @@ while True:
            
                     
             
-                if difi < (-30):
+                elif difi < (-30):
                     
                     move = (b"3,%d,%d." % (vmax,delay))
 #                     print("gauche")
                     clientm.publish("pre", move)
              
-                if width > 420:
+                if height > 160:
                     vmax = 150
                     move = (b"2,%d,%d." % (vmax,delay))
 #                     print("recule")
                     clientm.publish("pre", move)
                 
-                if width < 320:
+                elif height < 120:
                     vmax = 150
                     move = (b"1,%d,%d." % (vmax,delay))
 #                     print("avance")
