@@ -6,7 +6,10 @@ import paho.mqtt.client as mqtt
 import platform
 import random
 import subprocess
-
+from adafruit_servokit import ServoKit
+import board
+import busio
+import time
 
 HOST = '192.168.8.223'
 PORT = 80
@@ -17,7 +20,7 @@ clientm = mqtt.Client()
 clientm.connect("192.168.8.111",1883,60)
 
 vosk = 1
-vue = 1
+vue = 0
 headless = 0
 
 if platform.system() == 'Windows':
@@ -27,19 +30,29 @@ else:
     ser1 = serial.Serial('/dev/ttyUSB0',9600, timeout=0.1)
     ser2 = serial.Serial('/dev/ttyACM0',9600, timeout=0.1)
 
-time.sleep(3)
+time.sleep(1)
 
 
 if vosk == 1:
     proc = subprocess.Popen(['python3', './test_micro2.py', '-d11'], shell=False)
-
-time.sleep(5)
+    time.sleep(5)
 
 if vue == 1:
     if headless == 1:
         proc1 = subprocess.Popen(['python3', './vision2.py', '/dev/video0', '--headless'], shell=False)
     else:
         proc1 = subprocess.Popen(['python3', './vision2.py', '/dev/video0', 'rtp://192.168.8.185:1234'], shell=False)
+
+i = 90
+j = 45
+
+print("Initializing Servos")
+i2c_bus0=(busio.I2C(board.SCL_1, board.SDA_1))
+print("Initializing ServoKit")
+kit = ServoKit(channels=16, i2c=i2c_bus0, frequency=50)
+
+
+kit.servo[0].angle=i
 
 mute = 0
 
@@ -115,10 +128,10 @@ def on_message_pre(mosq, obj, msg):
         client.send(prec.encode())
 
 
-
-
-
-
+def on_message_servo(mosq, obj, msg):
+        ang = float(msg.payload.decode("utf-8").strip())   
+        print(ang)
+        kit.servo[0].angle=ang
 
 
 def on_message_vis(mosq, obj, msg):
@@ -134,25 +147,16 @@ def on_message_vis(mosq, obj, msg):
         else:
             ser2.write(vis.encode())                
 
-
-
-
-
-
-
-
-
-
 def on_message_emo(mosq, obj, msg):
         emot = msg.payload.decode("utf-8").strip()
         
         global emo
         global emop
         
-        if emop <= 0:
+        if emop < 0:
             emop = 0
         
-        if emop >=10:
+        if emop >10:
             emop = 10
         
         if emop < 5 and emop >= 0:
@@ -173,19 +177,8 @@ def on_message_emo(mosq, obj, msg):
             emop -= 1
             
             
-            
-        if emop <= 0:
-            emop = 0
-        
-        if emop >=10:
-            emop = 10
-        
-        if emop < 5 and emop >= 0:
-            emo = "bad"
-        else:
-            emo = "good"
         #print (emo)
-        #print (emop)
+        print (emop)
 
 
 def on_message_mode(mosq, obj, msg):
@@ -252,8 +245,6 @@ def on_message_mode(mosq, obj, msg):
         elif mod == "reload":
             os.system("sudo /etc/init.d/webiopi restart")
             
-#         return mute
-#         return mode
 
             
 def auto2():
@@ -397,6 +388,8 @@ if __name__=='__main__':
             clientm.message_callback_add('pre', on_message_pre)
             clientm.message_callback_add('emo', on_message_emo)
             clientm.message_callback_add('vis', on_message_vis)
+            clientm.message_callback_add('servo', on_message_servo)
+            clientm.subscribe("servo", 0)         
             clientm.subscribe("pre", 0)         
             clientm.subscribe("mode", 0)
             clientm.subscribe("move", 0)

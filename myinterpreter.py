@@ -29,8 +29,8 @@ class Myinterpreter():
     def interpret(self, data):
         
         clientm.loop_start()
-        data = data
-        insulte = {'tu es un merde', 'tu es un putain', 'tu es moche', 'tu es vilaine', 'tu es bete'}
+#         data = data
+        insulte = {'tu es moche', 'tu es vilaine', 'tu es bete'}
         compli = {'tu es belle', 'tu es joly'}
         global count
        
@@ -141,7 +141,9 @@ class Myinterpreter():
         if data.find('chercher') >= 0 and data.find('balle') >= 0:
             vue = "c1"
             clientm.publish("vue", vue) 
-        
+        if data.find('trouve') >= 0 and data.find('ballon') >= 0:
+            vue = "t3"
+            clientm.publish("vue", vue) 
         
         
         if data.find('chercher') >= 0 and data.find('jouer') >= 0:

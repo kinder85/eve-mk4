@@ -2,10 +2,10 @@
 import jetson.inference
 import jetson.utils
 
-from adafruit_servokit import ServoKit
-import board
-import busio
-import time
+# from adafruit_servokit import ServoKit
+# import board
+# import busio
+# import time
 
 import argparse
 import sys
@@ -28,13 +28,6 @@ cibleb = 0
 trouve = 0
 count = 0
 
-print("Initializing Servos")
-i2c_bus0=(busio.I2C(board.SCL_1, board.SDA_1))
-print("Initializing ServoKit")
-kit = ServoKit(channels=16, i2c=i2c_bus0, frequency=50)
-
-print("Done initializing")
-kit.servo[0].angle=i
 
 
 clientm = mqtt.Client()
@@ -115,7 +108,9 @@ def on_message_vue(mosq, obj, msg):
             cible = 0
             cibleb = 0
             trouve = 0
-            kit.servo[0].angle=90
+            i = 90
+            clientm.publish("servo", i)
+
         
 #         print(cible)
 #         print(cibleb)
@@ -138,7 +133,7 @@ while True:
         if a <= 21:
             
 #             print(a)
-            move = (b"7,160,0.")
+            move = (b"3,160,0.")
 
             clientm.publish("pre", move)
 #             time.sleep(0.6)
@@ -211,13 +206,15 @@ while True:
             if i >=180:
                     i = 180  
                 
-            kit.servo[0].angle=i
+            clientm.publish("servo", i)
 
 
         if index == cibleb and confidence >= 0.9:
                 if trouve == 1:
                     trouve = 0
-                    print("trouvé")
+                    son = b"n"
+                    clientm.publish("vis", son)
+#                     print("trouvé")
                 
                 print(height)
             
@@ -235,13 +232,13 @@ while True:
 #                     print("gauche")
                     clientm.publish("pre", move)
              
-                if height > 160:
+                if height > 360:
                     vmax = 150
                     move = (b"2,%d,%d." % (vmax,delay))
 #                     print("recule")
                     clientm.publish("pre", move)
                 
-                elif height < 120:
+                elif height < 300:
                     vmax = 150
                     move = (b"1,%d,%d." % (vmax,delay))
 #                     print("avance")
