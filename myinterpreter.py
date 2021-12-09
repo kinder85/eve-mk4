@@ -122,13 +122,14 @@ class Myinterpreter():
             clientm.publish("emo", emo)
         
         if data.find('comment') >= 0 and data.find('va') >= 0:
-            son = b"d"
+            son = b"n"
+            son1 = b"d"
             yeux = b"e"
-
             clientm.publish("vis", son)
-            
-            clientm.publish("vis", son)
+            clientm.publish("vis", son1)
             clientm.publish("vis", yeux)
+        
+        
         if data.find('suit') >= 0 and data.find('balle') >= 0:
             vue = "s1"
             clientm.publish("vue", vue)
@@ -138,25 +139,30 @@ class Myinterpreter():
         if data.find('suit') >= 0 and data.find('ballon') >= 0:
             vue = "s3"
             clientm.publish("vue", vue)
+        
+        
         if data.find('chercher') >= 0 and data.find('balle') >= 0:
             vue = "c1"
             clientm.publish("vue", vue) 
+        if data.find('chercher') >= 0 and data.find('jouer') >= 0:
+            vue = "c2"
+            clientm.publish("vue", vue)
+        if data.find('chercher') >= 0 and data.find('ballon') >= 0:
+            vue = "c3"
+            clientm.publish("vue", vue)
+        
+        
+        if data.find('stop') >= 0 :
+            vue = "stop"
+            clientm.publish("vue", vue)
+        
+        
         if data.find('trouve') >= 0 and data.find('ballon') >= 0:
             vue = "t3"
             clientm.publish("vue", vue) 
         
         
-        if data.find('chercher') >= 0 and data.find('jouer') >= 0:
-            vue = "c2"
-            clientm.publish("vue", vue)
-        
-        if data.find('chercher') >= 0 and data.find('ballon') >= 0:
-            vue = "c3"
-            clientm.publish("vue", vue)
-        if data.find('stop') >= 0 :
-            vue = "stop"
-            clientm.publish("vue", vue)
-        
+
         if data in insulte:
             yeux = b"e"
             emo = "emopm"

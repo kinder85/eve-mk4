@@ -90,15 +90,19 @@ def on_message_vue(mosq, obj, msg):
             cibleb = 0
 
         if vue == "c1":
+            clientm.publish("servo1", 100)
             cibleb = 1
             cible = 0
         if vue == "c2":
+            clientm.publish("servo1", 100)
             cibleb = 2
             cible = 0
         if vue == "c3":
+            clientm.publish("servo1", 100)
             cibleb = 3
             cible = 0
         if vue == "t3":
+            clientm.publish("servo1", 100)
             cible = 0
             cibleb = 3
             trouve = 1
@@ -109,7 +113,9 @@ def on_message_vue(mosq, obj, msg):
             cibleb = 0
             trouve = 0
             i = 90
+            j = 60
             clientm.publish("servo", i)
+            clientm.publish("servo1", j)
 
         
 #         print(cible)
@@ -191,22 +197,31 @@ while True:
         
             if difi > 15:
             
-       
                 i = i - difi/75
-                
-                
-               
-        
+
             elif difi < (-15):
                   
                 i = i - difi/75
                 
+            if difj > 15:
+            
+                j = j + difj/75
+
+            elif difj < (-15):
+                  
+                j = j + difj/75
+            
+            
             if i <= 0:
                     i = 0
             if i >=180:
                     i = 180  
-                
+            if j <= 0:
+                    i = 0
+            if j >=180:
+                    i = 180     
             clientm.publish("servo", i)
+            clientm.publish("servo1", j)
 
 
         if index == cibleb and confidence >= 0.9:
