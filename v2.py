@@ -58,7 +58,8 @@ mode = "manuel"
 
 emo = "good"
 emop = 10
-
+cd = " "
+conf = 0
 
 min_distance = 40
 
@@ -178,13 +179,13 @@ def on_message_emo(mosq, obj, msg):
             
             
         #print (emo)
-        print (emop)
+        #print (emop)
 
 
 def on_message_mode(mosq, obj, msg):
         mod = msg.payload.decode("utf-8").strip()
         
-        print(mod)
+#         print(mod)
         global emop
         global mute
         global mode
@@ -201,6 +202,7 @@ def on_message_mode(mosq, obj, msg):
                 
         elif mod == "manuel":
             sound(b"n")
+            kit.servo[1].angle=60
             if emo == "good":
                 ser2.write(b"e")
             mode = "manuel"
@@ -210,6 +212,7 @@ def on_message_mode(mosq, obj, msg):
             #sound(b"n")
             
             mode = "autoa"
+
         
         
         elif mod == "ligne":
@@ -241,17 +244,17 @@ def on_message_mode(mosq, obj, msg):
              sound(b"h")
              if emo == "good":
                  ser2.write(b"l")
-             #print (mute)
+             
         if mod != "autoa":
-            kit.servo[1].angle=60
+
             tv = 1
-#         print(tv)    
+   
         if tv != otv:
-            print(otv)       
+       
             proc1.terminate()
             time.sleep(1)
             otv = tv
-            print(otv)
+
             if vue == 1:
                 if tv == 1:
                     if headless == 1:
@@ -264,11 +267,12 @@ def on_message_mode(mosq, obj, msg):
                         proc1 = subprocess.Popen(['python3', 'vi1.py',"--model=dep/resnet18.onnx","--input_blob=input_0","--output_blob=output_0","--labels=dep/labels.txt", '/dev/video0', '--headless'], shell=False)
                     else:
                         proc1 = subprocess.Popen(['python3', 'vi1.py',"--model=dep/resnet18.onnx","--input_blob=input_0","--output_blob=output_0","--labels=dep/labels.txt", '/dev/video0', 'rtp://192.168.8.185:1234'], shell=False)
-            
+                        
 
 def on_message_vision(mosq, obj, msg):
-        data1 = msg.payload.decode("utf-8").strip()
         global cd,conf
+        data1 = msg.payload.decode("utf-8").strip()
+        
         if (data1 != 0):
                 a,b = data1.split(',')
                 cd = a
@@ -279,17 +283,8 @@ def on_message_vision(mosq, obj, msg):
             
 def auto2():
            
-    
-    
-    
-    
             if d > min_distance:
                 client.send(b'1,150,0.')
-                
-                
-                
-                        
-                        
             else:
                         
                 if l > r and l > min_distance:
@@ -347,25 +342,28 @@ def sound(s):
     
     
 def auto1():
-            if d > min_distance:
-                client.send(b'1,150,0.')
+    if d > min_distance:
+        client.send(b'1,150,0.')
 
-            else:
-                
-                client.send(b'6,200,0.')
+    else:
+        
+        client.send(b'6,200,0.')
                     
 def autoa():
     
+        
     
-    
-    if d > min_distance and (cd == "ok" or (cd == "danger" and conf < 0.75)):
-        client.send(b'1,150,0.')
-#       print("avance")
+        
+#     if d > min_distance and (cd == "ok" or (cd == "danger" and conf < 0.75)):
+        if d > min_distance and (cd == "ok"):
 
-    else:
-                
-        client.send(b'6,200,0.')
-#       print("tourne")
+            client.send(b'1,130,0.')
+#             print("avance")
+
+        elif d < min_distance or (cd == "danger" and conf > 0.8):
+                    
+            client.send(b'6,140,0.')
+#             print("tourne")
 
 
 def read():
@@ -397,6 +395,9 @@ def read():
             except (IndexError,ValueError) :
                 continue
 
+
+        
+        
         if mode == "auto3":
             
             auto2()
@@ -404,20 +405,19 @@ def read():
         
         if mode == "auto":
             auto1()   
+        
         if mode == "autoa":
             
-            time.sleep(10)
-            kit.servo[1].angle=100
             autoa()
 
         if mode == "manuel":
             client.send(b'5,100,0.')
-            
+
         if mode == "ligne":            
             
             ligne()   
 
-
+        
 
 if __name__=='__main__':
     try: 
@@ -425,7 +425,7 @@ if __name__=='__main__':
             
             
             
-            print(tv)
+#             print(tv)
             if vue == 1:
                 if tv == 1:
                     if headless == 1:
@@ -454,9 +454,6 @@ if __name__=='__main__':
             time.sleep(0.1)
         
             read()
-            
-        
-            #print(mode) 
             
     except KeyboardInterrupt:
         ser1.close()
