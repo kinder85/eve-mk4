@@ -24,4 +24,3 @@ le dossier firmware contient le code pour arduino.capteur sur arduino uno(5v), c
 
 le lien vers une demo sur yt : https://youtu.be/oCjVjIgF8Yo
 
-ps: ne soyez pas trop dur sur ma facon de coder, je suis autodidacte et n'ai jamais pris un cours d'informatique de ma vie.
