@@ -3,7 +3,7 @@ nouvelle version de eve la robot
 
 voici ma nouvelle machine à base de jetson nano.
 elle se controle à la voix grace a vosk(j'utilise leur plus petit modele; pour la compilation sur nano il faut utilser le whl present sur leur github et resoudre les problemes au fur et a mesure)
-j'utilse, pour la vision, jetson-inference(je remercie au passage dusty-nv pour son travail remarquable) et un modele custom.
+j'utilse, pour la vision, jetson-inference et un modele custom.
 pour l'instant les commandes vocales sont limitées mais s'etoffent de jours en jours et mon modele ne reconnait que trois objets.
 
 ce qui vas etre fait(dans un avenir plus ou moins proche, petit budget...):
