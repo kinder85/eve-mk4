@@ -12,8 +12,8 @@ char serialbuf[128];
 #include <string.h> 
 #define MAX_STRING_LEN 40 
 #include <ESP8266WiFi.h> 
-const char* ssid = "OpenWrt n";
-const char* password = "goodlife";
+const char* ssid = "";
+const char* password = "";
 int ledPin = 16;
 int ledPin2 = 15;
 // ATTENTION GPIO13 correspond à la PIN 07
